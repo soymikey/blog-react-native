@@ -12,15 +12,13 @@ import {
   Alert,
   TouchableOpacity,
   Image,
-  ImageBackground,
-  AsyncStorage
+  ImageBackground
 } from "react-native";
 
-import { ListItem, Avatar, Button } from "react-native-elements";
+import { ListItem, Avatar } from "react-native-elements";
 import Loading from "../../components/Loading";
 import Icon from "react-native-vector-icons/FontAwesome";
 import axios from "../../utils/axios";
-import alert from "../../utils/alert.js";
 
 class AboutScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -46,10 +44,10 @@ class AboutScreen extends React.Component {
         name: "Login",
         icon: "user-circle"
       },
-      // {
-      //   name: "Register",
-      //   icon: "user-circle"
-      // },
+      {
+        name: "Register",
+        icon: "user-circle"
+      },
       {
         name: "Github",
         icon: "github"
@@ -99,10 +97,6 @@ class AboutScreen extends React.Component {
       leftAvatar={{ source: { uri: item.avatar_url } }}
     />
   );
-  async logoutHandler() {
-    await AsyncStorage.clear();
-    alert("", "退出成功");
-  }
   render() {
     return (
       <View style={styles.backgroundColor}>
@@ -152,12 +146,6 @@ class AboutScreen extends React.Component {
               onPress={() => this.props.navigation.navigate("LoginRegister")}
             />
           ))}
-          <Button
-            title="退出"
-            buttonStyle={{ backgroundColor: "red" }}
-            containerStyle={{ padding: 20, paddingLeft: 30, paddingRight: 30 }}
-            onPress={() => this.logoutHandler()}
-          />
         </ScrollView>
       </View>
     );

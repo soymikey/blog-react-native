@@ -11,8 +11,7 @@ import {
   TouchableNativeFeedback,
   Alert,
   TouchableOpacity,
-  Dimensions,
-  RefreshControl
+  Dimensions
 } from "react-native";
 
 import {
@@ -63,8 +62,7 @@ class HomeScreen extends React.Component {
   state = {
     loading: false,
     list: [],
-    isShowModal: false,
-    refreshing: false
+    isShowModal: false
   };
   componentDidMount() {
     this.fetchList({ page: 1, keyword: "", category: "", tag: "" });
@@ -80,9 +78,11 @@ class HomeScreen extends React.Component {
         params: { page, pageSize: 20, title: keyword, category, tag }
       })
       .then(res => {
+        console.log("res", res);
+
         const list = res.data;
 
-        this.setState({ list, loading: false, refreshing: false }, () => {
+        this.setState({ list, loading: false }, () => {
           console.log("文章请求成功", this.state);
         });
       })
@@ -103,10 +103,6 @@ class HomeScreen extends React.Component {
   closeModal(value) {
     this.setState({ isShowModal: value });
   }
-  _onRefresh = () => {
-    this.setState({ refreshing: true });
-    this.fetchList({ page: 1, keyword: "", category: "", tag: "" });
-  };
 
   render() {
     const { list, loading, isShowModal } = this.state;
@@ -115,14 +111,7 @@ class HomeScreen extends React.Component {
         {loading ? (
           <Loading />
         ) : (
-          <ScrollView
-            refreshControl={
-              <RefreshControl
-                refreshing={this.state.refreshing}
-                onRefresh={this._onRefresh}
-              />
-            }
-          >
+          <ScrollView>
             <ModalComponent
               show={isShowModal}
               closeModal={this.closeModal.bind(this)}

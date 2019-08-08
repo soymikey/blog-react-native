@@ -14,13 +14,15 @@ import ArticleScreen from "./views/Article/Article.js";
 import AboutScreen from "./views/About/About.js";
 import SearchScreen from "./views/Search/Search.js";
 import CategoryScreen from "./views/Category/Category.js";
+import PublishArticleScreen from "./views/PublishArticle/PublishArticle.js";
+import LoginRegisterScreen from "./views/About/childComponents/LoginRegister.js";
 
 const HomeStack = createStackNavigator({
   // About: { screen: AboutScreen },
+  // LoginRegister: { screen: LoginRegisterScreen },
 
   Home: { screen: HomeScreen },
   Search: { screen: SearchScreen },
-
   Article: { screen: ArticleScreen }
 });
 const ArticleStack = createStackNavigator({
@@ -30,17 +32,21 @@ const SearchStack = createStackNavigator({
   Search: { screen: SearchScreen },
   Article: { screen: ArticleScreen }
 });
+const PublishArticleStack = createStackNavigator({
+  PublishArticle: { screen: PublishArticleScreen }
+});
 const CategoryStack = createStackNavigator({
   Category: { screen: CategoryScreen }
 });
 const AboutStack = createStackNavigator({
-  About: { screen: AboutScreen }
+  About: { screen: AboutScreen },
+  LoginRegister: { screen: LoginRegisterScreen }
 });
 
 const MainTabs = createBottomTabNavigator(
   {
     首页: { screen: HomeStack },
-    分类: { screen: CategoryStack },
+    发布: { screen: PublishArticleStack },
     我的: { screen: AboutStack }
   },
   {
@@ -50,7 +56,7 @@ const MainTabs = createBottomTabNavigator(
         let iconName;
         if (routeName === "首页") {
           iconName = "home";
-        } else if (routeName === "分类") {
+        } else if (routeName === "发布") {
           iconName = "file-text";
         } else if (routeName === "我的") {
           iconName = "user";
