@@ -1,25 +1,23 @@
 /* eslint-disable handle-callback-err */
 /* eslint-disable no-shadow */
 /* eslint-disable react-native/no-inline-styles */
-import React, { Fragment } from "react";
+import React, { Component } from "react";
 
 import {
-  SafeAreaView,
-  StyleSheet,
   ScrollView,
   View,
   Text,
-  StatusBar,
   TouchableOpacity,
-  TextInput
+  Picker,
+  AsyncStorage
 } from "react-native";
 
-import { Input, Button, ButtonGroup } from "react-native-elements";
+import { Input, Button } from "react-native-elements";
 
 import Icon from "react-native-vector-icons/FontAwesome";
 import axios from "../../utils/axios";
 import alert from "../../utils/alert";
-class PublishArticleScreen extends React.Component {
+class PublishArticleScreen extends Component {
   static navigationOptions = ({ navigation }) => {
     const { params = {} } = navigation.state;
     return {
@@ -45,11 +43,12 @@ class PublishArticleScreen extends React.Component {
   state = {
     title: "",
     content: " ",
-    categoryIndex: 1,
+    selectedCategory: "",
     categoryList: [],
-    tagIndex: 1,
+    selectedTag: "",
     tagList: [],
-    Loading: false // 发布的loading
+    Loading: false, // 发布的loading
+    isLogin: null
   };
   componentDidMount() {
     this.fetchCategories();
@@ -61,7 +60,10 @@ class PublishArticleScreen extends React.Component {
       const formatedData = res.data.map(category => {
         return category.name;
       });
-      this.setState({ categoryList: formatedData });
+      this.setState({
+        categoryList: formatedData,
+        selectedCategory: formatedData[0]
+      });
     });
   }
   fetchTags() {
@@ -69,29 +71,16 @@ class PublishArticleScreen extends React.Component {
       const formatedData = res.data.map(tag => {
         return tag.name;
       });
-      this.setState({ tagList: formatedData });
+      this.setState({ tagList: formatedData, selectedTag: formatedData[0] });
     });
   }
 
-  updateCategoryIndex(categoryIndex) {
-    this.setState({ categoryIndex });
-  }
-  updateTagIndex(tagIndex) {
-    this.setState({ tagIndex });
-  }
-  handlerPublish() {
-    const {
-      title,
-      content,
-      categoryList,
-      categoryIndex,
-      tagList,
-      tagIndex
-    } = this.state;
+  async handlerPublish() {
+    const { title, content, selectedCategory, selectedTag } = this.state;
     const params = {
-      categories: [categoryList[categoryIndex]],
+      categories: [selectedCategory],
       content,
-      tags: [tagList[tagIndex]],
+      tags: [selectedTag],
       title
     };
     this.setState({ Loading: true });
@@ -112,14 +101,25 @@ class PublishArticleScreen extends React.Component {
         this.setState({ Loading: false });
       });
   }
+  async isLogin() {
+    const hasLogin = await AsyncStorage.getItem("username");
+
+    if (hasLogin !== null) {
+      this.setState({ isLogin: true });
+      return;
+    }
+    this.setState({ isLogin: false });
+    return;
+  }
   render() {
     const {
-      categoryIndex,
+      selectedCategory,
       categoryList,
-      tagIndex,
       tagList,
-      Loading
+      Loading,
+      selectedTag
     } = this.state;
+    this.isLogin();
     return (
       <ScrollView>
         <Input
@@ -127,45 +127,62 @@ class PublishArticleScreen extends React.Component {
           placeholder=""
           onChangeText={title => this.setState({ title })}
         />
-        <View>
-          <Text
-            style={{
-              fontSize: 15,
-              marginLeft: 20,
-              marginTop: 10,
-              marginBottom: 10
-            }}
-          >
-            分类:
-          </Text>
-          <ButtonGroup
-            selectedIndex={categoryIndex}
-            buttons={categoryList}
-            onPress={categoryIndex => this.updateCategoryIndex(categoryIndex)}
-            containerStyle={{
-              height: 30
-            }}
-          />
-        </View>
-        <View>
-          <Text
-            style={{
-              fontSize: 15,
-              marginLeft: 20,
-              marginTop: 10,
-              marginBottom: 10
-            }}
-          >
-            标签:
-          </Text>
-          <ButtonGroup
-            selectedIndex={tagIndex}
-            buttons={tagList}
-            onPress={tagIndex => this.updateTagIndex(tagIndex)}
-            containerStyle={{
-              height: 50
-            }}
-          />
+        <View
+          style={{
+            margin: 10,
+            flexDirection: "row",
+            flexWrap: "nowrap",
+            justifyContent: "space-between"
+          }}
+        >
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text
+              style={{
+                fontSize: 20,
+                marginRight: 10
+              }}
+            >
+              分类:
+            </Text>
+
+            <Picker
+              pickerStyleType={{}}
+              selectedValue={selectedCategory}
+              style={{ height: 50, width: 100 }}
+              onValueChange={(itemValue, itemIndex) =>
+                this.setState({ selectedCategory: itemValue })
+              }
+            >
+              {categoryList.map((category, index) => {
+                return (
+                  <Picker.Item label={category} value={category} key={index} />
+                );
+              })}
+            </Picker>
+          </View>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text
+              style={{
+                fontSize: 20,
+                marginRight: 10
+              }}
+            >
+              标签:
+            </Text>
+
+            <Picker
+              pickerStyleType={{}}
+              selectedValue={selectedTag}
+              style={{ height: 50, width: 100 }}
+              onValueChange={(itemValue, itemIndex) =>
+                this.setState({ selectedTag: itemValue })
+              }
+            >
+              {tagList.map((tag, index) => {
+                return <Picker.Item label={tag} value={tag} key={index} />;
+              })}
+            </Picker>
+          </View>
         </View>
 
         <Input
@@ -184,8 +201,9 @@ class PublishArticleScreen extends React.Component {
           }}
         />
         <Button
-          title="发布"
-          containerStyle={{ margin: 10, marginTop: 10 }}
+          title={this.state.isLogin ? "发布" : "您还未登陆"}
+          disabled={!this.state.isLogin}
+          containerStyle={{ margin: 10, marginTop: 30 }}
           onPress={() => this.handlerPublish()}
           loading={Loading}
         />
@@ -193,7 +211,5 @@ class PublishArticleScreen extends React.Component {
     );
   }
 }
-
-const styles = StyleSheet.create({});
 
 export default PublishArticleScreen;

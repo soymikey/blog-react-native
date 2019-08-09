@@ -1,23 +1,16 @@
 /* eslint-disable handle-callback-err */
 /* eslint-disable react-native/no-inline-styles */
-import React from "react";
+import React, { Component } from "react";
 
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar
-} from "react-native";
+import { StyleSheet, ScrollView, View, Text } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 
-import { SearchBar, Button } from "react-native-elements";
+import { SearchBar } from "react-native-elements";
 import axios from "../../utils/axios";
 
 import ArticleList from "../../components/ArticleList";
 
-class SearchScreen extends React.Component {
+class SearchScreen extends Component {
   static navigationOptions = {
     header: null
   };

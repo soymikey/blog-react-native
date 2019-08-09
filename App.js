@@ -13,7 +13,7 @@ import HomeScreen from "./views/Home/Home.js";
 import ArticleScreen from "./views/Article/Article.js";
 import AboutScreen from "./views/About/About.js";
 import SearchScreen from "./views/Search/Search.js";
-import CategoryScreen from "./views/Category/Category.js";
+// import CategoryScreen from "./views/Category/Category.js";
 import PublishArticleScreen from "./views/PublishArticle/PublishArticle.js";
 import LoginRegisterScreen from "./views/About/childComponents/LoginRegister.js";
 
@@ -25,19 +25,17 @@ const HomeStack = createStackNavigator({
   Search: { screen: SearchScreen },
   Article: { screen: ArticleScreen }
 });
-const ArticleStack = createStackNavigator({
-  Article: { screen: ArticleScreen }
-});
-const SearchStack = createStackNavigator({
-  Search: { screen: SearchScreen },
-  Article: { screen: ArticleScreen }
-});
+// const ArticleStack = createStackNavigator({
+//   Article: { screen: ArticleScreen }
+// });
+// const SearchStack = createStackNavigator({
+//   Search: { screen: SearchScreen },
+//   Article: { screen: ArticleScreen }
+// });
 const PublishArticleStack = createStackNavigator({
   PublishArticle: { screen: PublishArticleScreen }
 });
-const CategoryStack = createStackNavigator({
-  Category: { screen: CategoryScreen }
-});
+
 const AboutStack = createStackNavigator({
   About: { screen: AboutScreen },
   LoginRegister: { screen: LoginRegisterScreen }
@@ -73,25 +71,25 @@ const MainTabs = createBottomTabNavigator(
     }
   }
 );
-const MainDrawer = createDrawerNavigator(
-  {
-    MainTabs: MainTabs,
-    Article: ArticleStack,
-    Search: SearchStack
-  },
-  {
-    hideStatusBar: false,
-    drawerBackgroundColor: "rgba(255,255,255,.9)",
-    overlayColor: "#EFEFEF",
-    contentOptions: {
-      activeTintColor: "#fff",
-      activeBackgroundColor: "#2289DC"
-    }
-  }
-);
+// const MainDrawer = createDrawerNavigator(
+//   {
+//     MainTabs: MainTabs,
+//     Article: ArticleStack,
+//     Search: SearchStack
+//   },
+//   {
+//     hideStatusBar: false,
+//     drawerBackgroundColor: "rgba(255,255,255,.9)",
+//     overlayColor: "#EFEFEF",
+//     contentOptions: {
+//       activeTintColor: "#fff",
+//       activeBackgroundColor: "#2289DC"
+//     }
+//   }
+// );
 const AppModalStack = createStackNavigator(
   {
-    App: MainDrawer
+    App: MainTabs
     // Promotion1: {
     //   screen: ArticleStack
     // }

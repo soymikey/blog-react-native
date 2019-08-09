@@ -2,32 +2,14 @@
 import React, { Component } from "react";
 
 import {
-  SafeAreaView,
   StyleSheet,
   ScrollView,
   View,
-  Text,
-  StatusBar,
-  TouchableOpacity,
   Dimensions,
   AsyncStorage
 } from "react-native";
 
-import {
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions
-} from "react-native/Libraries/NewAppScreen";
-import {
-  Button,
-  ThemeProvider,
-  Header,
-  ListItem,
-  Image,
-  Input
-} from "react-native-elements";
-import Loading from "../../../components/Loading.js";
+import { Button, Image, Input } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import axios from "../../../utils/axios";
 import alert from "../../../utils/alert.js";
@@ -36,7 +18,6 @@ const { width, height } = Dimensions.get("window");
 
 class LoginRegisterScreen extends Component {
   static navigationOptions = ({ navigation }) => {
-    const { params = {} } = navigation.state;
     return {
       headerTitle: "登陆",
       headerStyle: {
@@ -49,8 +30,20 @@ class LoginRegisterScreen extends Component {
   state = {
     account: "",
     password: "",
-    loading: false
+    loading: false,
+    isLogin: null
   };
+
+  async isLogin() {
+    const hasLogin = await AsyncStorage.getItem("username");
+
+    if (hasLogin !== null) {
+      this.setState({ isLogin: true });
+      return;
+    }
+    this.setState({ isLogin: false });
+    return;
+  }
 
   handleSubmit() {
     const { account, password } = this.state;
@@ -61,7 +54,8 @@ class LoginRegisterScreen extends Component {
         if (res.code === 200) {
           await AsyncStorage.setItem("token", res.token);
           await AsyncStorage.setItem("username", res.username);
-          this.setState({ loading: false });
+          this.setState({ loading: false, account: "", password: "" });
+          alert("", res.message);
         }
       })
       .catch(err => {
@@ -71,6 +65,8 @@ class LoginRegisterScreen extends Component {
   }
 
   render() {
+    this.isLogin();
+
     return (
       <ScrollView style={{ padding: 20 }}>
         {/* <View style={{ position: "absolute", top: 10, zIndex: 10 }}>
@@ -101,8 +97,10 @@ class LoginRegisterScreen extends Component {
             containerStyle={{ marginTop: 10 }}
           />
         </View>
+        {/* <Text>{this.isLogin()}</Text> */}
         <Button
-          title="登陆"
+          title={this.state.isLogin ? "已登陆" : "登陆"}
+          disabled={this.state.isLogin}
           loading={this.state.loading}
           containerStyle={{ marginTop: 50 }}
           onPress={() => {

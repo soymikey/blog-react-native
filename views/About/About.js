@@ -1,30 +1,23 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { Fragment } from "react";
+import React, { Component } from "react";
 import {
-  SafeAreaView,
   StyleSheet,
   ScrollView,
   View,
   Text,
-  StatusBar,
-  // Button,
-  TouchableNativeFeedback,
-  Alert,
   TouchableOpacity,
-  Image,
   ImageBackground,
   AsyncStorage
 } from "react-native";
 
 import { ListItem, Avatar, Button } from "react-native-elements";
-import Loading from "../../components/Loading";
+
 import Icon from "react-native-vector-icons/FontAwesome";
-import axios from "../../utils/axios";
+
 import alert from "../../utils/alert.js";
 
-class AboutScreen extends React.Component {
+class AboutScreen extends Component {
   static navigationOptions = ({ navigation }) => {
-    const { params = {} } = navigation.state;
     return {
       headerTitle: "我的",
       headerStyle: {
@@ -41,6 +34,7 @@ class AboutScreen extends React.Component {
     };
   };
   state = {
+    isLogin: null,
     list: [
       {
         name: "Login",
@@ -101,9 +95,23 @@ class AboutScreen extends React.Component {
   );
   async logoutHandler() {
     await AsyncStorage.clear();
+    const username = await AsyncStorage.getItem("username");
+    console.log("username", username);
+
     alert("", "退出成功");
   }
+  async isLogin() {
+    const hasLogin = await AsyncStorage.getItem("username");
+
+    if (hasLogin !== null) {
+      this.setState({ isLogin: true });
+      return;
+    }
+    this.setState({ isLogin: false });
+    return;
+  }
   render() {
+    this.isLogin();
     return (
       <View style={styles.backgroundColor}>
         <ScrollView>
@@ -154,6 +162,7 @@ class AboutScreen extends React.Component {
           ))}
           <Button
             title="退出"
+            disabled={!this.state.isLogin}
             buttonStyle={{ backgroundColor: "red" }}
             containerStyle={{ padding: 20, paddingLeft: 30, paddingRight: 30 }}
             onPress={() => this.logoutHandler()}

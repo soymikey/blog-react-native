@@ -1,28 +1,12 @@
-import React, { Fragment } from "react";
+import React, { Component } from "react";
 
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-  Button,
-  TouchableOpacity
-} from "react-native";
+import { StyleSheet, ScrollView, View, Text } from "react-native";
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions
-} from "react-native/Libraries/NewAppScreen";
 import axios from "../../utils/axios";
 import Loading from "../../components/Loading";
 import ArticleList from "../../components/ArticleList";
 
-class ArticleScreen extends React.Component {
+class ArticleScreen extends Component {
   static navigationOptions = ({ navigation }) => {
     const articleName = navigation.getParam("articleName", "文章标题");
     return {

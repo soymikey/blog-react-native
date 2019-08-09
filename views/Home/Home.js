@@ -1,34 +1,23 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { Fragment } from "react";
+import React, { Component } from "react";
 import {
-  SafeAreaView,
   StyleSheet,
   ScrollView,
   View,
   Text,
-  StatusBar,
-  // Button,
-  TouchableNativeFeedback,
-  Alert,
   TouchableOpacity,
   Dimensions,
   RefreshControl
 } from "react-native";
 
-import {
-  Button,
-  ThemeProvider,
-  Header,
-  ListItem,
-  Image
-} from "react-native-elements";
+import { ListItem, Image } from "react-native-elements";
 import Loading from "../../components/Loading";
 import ModalComponent from "./childComponents/Modal";
 import Icon from "react-native-vector-icons/FontAwesome";
 import axios from "../../utils/axios";
 
 const { width, height } = Dimensions.get("window");
-class HomeScreen extends React.Component {
+class HomeScreen extends Component {
   static navigationOptions = ({ navigation }) => {
     const { params = {} } = navigation.state;
     return {
@@ -86,7 +75,9 @@ class HomeScreen extends React.Component {
           console.log("文章请求成功", this.state);
         });
       })
-      .catch(err => {});
+      .catch(err => {
+        console.log("err", err);
+      });
   }
   filterArticle(categoryKeyWord, tagKeyWord) {
     ///article/getList
@@ -123,11 +114,13 @@ class HomeScreen extends React.Component {
               />
             }
           >
-            <ModalComponent
-              show={isShowModal}
-              closeModal={this.closeModal.bind(this)}
-              filterArticle={this.filterArticle.bind(this)}
-            />
+            {isShowModal ? (
+              <ModalComponent
+                show={isShowModal}
+                closeModal={this.closeModal.bind(this)}
+                filterArticle={this.filterArticle.bind(this)}
+              />
+            ) : null}
             {list.length ? (
               list.map((article, i) => (
                 <TouchableOpacity

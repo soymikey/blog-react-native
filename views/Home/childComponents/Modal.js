@@ -6,8 +6,7 @@ import {
   StyleSheet,
   Dimensions,
   Modal,
-  Text,
-  Image
+  Text
 } from "react-native";
 import { Button } from "react-native-elements";
 import { ScrollView } from "react-native-gesture-handler";
@@ -107,11 +106,11 @@ class ModalComponent extends Component {
       {
         categoryList: newCategoryList,
         tagList: newTagList
-      },
-      () => {
-        this.props.filterArticle("", "");
-        this.closeModal();
       }
+      // () => {
+      //   this.props.filterArticle("", "");
+      //   this.closeModal();
+      // }
     );
   }
   filterHandler() {
@@ -209,6 +208,7 @@ class ModalComponent extends Component {
                 >
                   <Button
                     containerStyle={{ marginTop: 50 }}
+                    buttonStyle={{ backgroundColor: "red" }}
                     title="重置"
                     onPress={() => {
                       this.resetFilter();
